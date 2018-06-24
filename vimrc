@@ -7,8 +7,24 @@ endif
 "   and then in current directory
 set tags=./.git/tags,./../.git/tags,./../../.git/tags,./.tags
 
+" Configure gui
+if has("gui_running")
+    set guioptions-=m  "remove menu bar
+    set guioptions-=T  "remove toolbar
+    set guioptions-=r  "remove right-hand scroll bar
+    set guioptions-=L  "remove left-hand scroll bar
+    set guioptions-=e  "make gui tab line to look like console tabs
+endif
+set guifont=Droid\ Sans\ Mono\ for\ Powerline\ 10
+
 " Configure gruvbox
+set background=dark
 let g:gruvbox_invert_selection=0 " change background for selection and not inversion
+let g:gruvbox_contrast_dark="medium"
+
+if !has('gui_running')
+    let g:gruvbox_termcolors=16 " pick-up terminal's own colorscheme (instead of 256-colors scheme)
+endif
 
 " Setup VUNDLE plugin manager
 set nocompatible              " be iMproved, required
@@ -17,8 +33,6 @@ filetype off                  " required
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
@@ -41,9 +55,15 @@ Plugin 'majutsushi/tagbar'
 " Enhanced json highlighting
 Plugin 'elzr/vim-json'
 
+" incrementally highlights ALL pattern matches (+some features)
+Plugin 'haya14busa/incsearch.vim'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+" Enable syntax highlighting
+syntax enable
 
 " Use Gruvbox color scheme
 colorscheme gruvbox
@@ -83,7 +103,7 @@ set number
 
 " Don't use swp files, define special directory for backup files
 set noswapfile
-set backupdir=~/backups
+set backupdir=~/backup
 
 " Set diff options: fill gaps with empty lines, ignore whitespace changes, use
 " 3 lines of context
@@ -92,3 +112,17 @@ set diffopt=filler,iwhite,context:3
 " Mappings
 " TagBar:
 nmap <F8> :TagbarToggle<CR>
+" incsearch
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
+" Configure incsearch to automatically turn off highlight
+set hlsearch
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
